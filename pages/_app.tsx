@@ -9,7 +9,6 @@ const activeChainId = ChainId.Mumbai;
 function MyApp({ Component, pageProps }) {
   return (
     <ThirdwebProvider desiredChainId={activeChainId}>
-      {/* Next Auth Session Provider */}
       <SessionProvider session={pageProps.session}>
         <Head>
           <title>thirdweb Community Rewards Example</title>

@@ -13,7 +13,7 @@ export default function SignIn() {
     return (
       <div className={styles.bigSpacerTop}>
         <a onClick={() => signOut()} className={styles.secondaryButton}>
-          Sign out of Discord
+          Sign out of Spotify
         </a>
         |
         <a
@@ -42,11 +42,11 @@ export default function SignIn() {
     );
   }
 
-  // 2. Connect with Discord (OAuth)
+  // 2. Connect with Spotify (OAuth)
   if (!session) {
     return (
       <div className={`${styles.main}`}>
-        <h2 className={styles.noGapBottom}>Sign In with Discord</h2>
+        <h2 className={styles.noGapBottom}>Sign In with Spotify</h2>
         <p>
           👋{" "}
           <i>
@@ -58,20 +58,11 @@ export default function SignIn() {
           </i>
         </p>
 
-        <p>Sign In with Discord to check your eligibility for the NFT!</p>
-
-        <p>
-          <i>
-            (we check to see if you are a member of the thirdweb discord when
-            you try to mint).
-          </i>
-        </p>
-
         <button
           className={`${styles.mainButton} ${styles.spacerTop}`}
-          onClick={signIn}
+          onClick={() => signIn("spotify")}
         >
-          Connect Discord
+          Connect Spotify
         </button>
       </div>
     );

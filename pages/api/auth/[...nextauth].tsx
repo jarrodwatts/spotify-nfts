@@ -1,12 +1,13 @@
 import NextAuth from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
+import SpotifyProvider from "next-auth/providers/spotify";
+
 export default NextAuth({
   // Configure one or more authentication providers
   providers: [
-    DiscordProvider({
+    SpotifyProvider({
       clientId: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET,
-      authorization: { params: { scope: "identify guilds" } },
+      authorization: { params: { scope: "user-top-read" } },
     }),
   ],
 

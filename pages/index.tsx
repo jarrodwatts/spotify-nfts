@@ -14,7 +14,7 @@ export default function Home() {
   // Grab the currently connected wallet's address
   const address = useAddress();
 
-  // Get the currently authenticated user's session (Next Auth + Discord)
+  // Get the currently authenticated user's session (Next Auth + Spotify)
   const { data: session } = useSession();
 
   // Hooks to enforce the user is on the correct network (Mumbai as declared in _app.js) before minting
@@ -23,22 +23,19 @@ export default function Home() {
 
   // Get the NFT Collection we deployed using thirdweb+
   const nftCollectionContract = useNFTCollection(
-    "0xb5201E87b17527722A641Ac64097Ece34B21d10A"
+    "0x79f096f1fE932dfe746Fc6f79c42bBF38212e214"
   );
 
-  // This is simply a client-side check to see if the user is a member of the discord in /api/check-is-in-server
-  // We ALSO check on the server-side before providing the signature to mint the NFT in /api/generate-signature
-  // This check is to show the user that they are eligible to mint the NFT on the UI.
   const [data, setData] = useState(null);
   const [isLoading, setLoading] = useState(false);
   useEffect(() => {
     if (session) {
       setLoading(true);
       // Load the check to see if the user  and store it in state
-      fetch("api/check-is-in-server")
+      fetch("api/load-top-track")
         .then((res) => res.json())
         .then((d) => {
-          setData(d || undefined);
+          setData(d.data || undefined);
           setLoading(false);
         });
     }
@@ -76,12 +73,12 @@ export default function Home() {
 
       // Show a link to view the NFT they minted
       alert(
-        `Success 🔥 Check out your NFT here: https://testnets.opensea.io/assets/mumbai/0xb5201e87b17527722a641ac64097ece34b21d10a/${nft.id.toNumber()}`
+        `Success 🔥 Check out your NFT here: https://testnets.opensea.io/assets/mumbai/0x79f096f1fE932dfe746Fc6f79c42bBF38212e214/${nft.id.toNumber()}`
       );
     }
     // If the user does not meet the criteria to have a signature generated, we can show them an error
     else {
-      alert("Something went wrong. Are you a member of the discord?");
+      alert("Something went wrong.");
     }
   }
 
@@ -103,8 +100,7 @@ export default function Home() {
       </p>
 
       <p className={styles.explain}>
-        This demo checks if the user is a member of your Discord server, and
-        allows them to mint an NFT if they are.
+        This demo converts your top spotify song into an NFT.
       </p>
 
       <hr className={styles.divider} />
@@ -113,36 +109,34 @@ export default function Home() {
 
       {address && session ? (
         isLoading ? (
-          <p>Checking...</p>
+          <p>Fetching data...</p>
         ) : data ? (
           <div className={`${styles.main} ${styles.spacerTop}`}>
             <h3>Hey {session?.user?.name} 👋</h3>
-            <h4>Thanks for being a member of the Discord.</h4>
-            <p>Here is a reward for you!</p>
+            <p>Here is your top track of all time:</p>
 
-            {/* NFT Preview */}
-            <div className={styles.nftPreview}>
-              <b>Your NFT:</b>
-              <img src={session?.user.image} />
-              <p>{session.user.name}&apos;s thirdweb Discord Member NFT</p>
-            </div>
+            <h3>
+              <b>{data?.name}</b> by <b>{data?.artists[0].name}</b>
+            </h3>
+
+            <img
+              src={data?.album.images[0].url}
+              style={{
+                maxWidth: "85%",
+                borderRadius: 16,
+              }}
+            />
 
             <button
-              className={`${styles.mainButton} ${styles.spacerTop}`}
+              className={`${styles.mainButton} ${styles.bigSpacerTop}`}
               onClick={mintNft}
             >
-              Claim NFT
+              Mint NFT
             </button>
           </div>
         ) : (
           <div className={`${styles.main} ${styles.spacerTop}`}>
-            <p>Looks like you are not a part of the Discord server.</p>
-            <a
-              className={styles.mainButton}
-              href={`https://discord.com/invite/thirdweb`}
-            >
-              Join Server
-            </a>
+            <p>Something went wrong checking your Spotify data.</p>
           </div>
         )
       ) : null}
